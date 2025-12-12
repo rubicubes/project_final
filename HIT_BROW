@@ -1,18 +1,45 @@
 import random
 
+def score(number):
+  if number >= 90:
+    return "excellent"
+  elif number >= 50:
+    return "great"
+  elif number >= 20:
+    return "good"
+  else:
+    return "bad"
 
-a = 0
+
+a = ""
 l = []
-ans = 0
 for i in range(1, 10):
-  l.append(i)
-for i in range(3):
-  ans += random.choice(l)*(10**(2-i))
-  if i == 0:
-    l.append(0)
-a = ans
+  for j in range(1, 10):
+    if j == i:
+      continue
+    for k in range(1, 10):
+      if k == i or k == j:
+        continue
+      l.append(str(i)+str(j)+str(k))
+print(len(l))
+ans = random.choice(l)
 while a != ans:
-  a = int(input())
+  a = input()
+  hit = 0
+  brow = 0
+  if a[0] == ans[0]:
+    hit += 1
+  elif a[0] == ans[1] or a[0] == ans[2]:
+    brow += 1
+  if a[1] == ans[1]:
+    hit += 1
+  elif a[1] == ans[0] or a[1] == ans[2]:
+    brow += 1
+  if a[2] == ans[2]:
+    hit += 1
+  elif a[2] == ans[0] or a[2] == ans[1]:
+    brow += 1
+  
   print("HIT", hit)
   print("BROW", brow)
-print(l)
+  print("SCORE", score(s))
