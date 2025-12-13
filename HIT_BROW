@@ -1,18 +1,41 @@
 import random
 
 def score(number):
-  if number >= 90:
+  number = (1-number)*100
+  if number >= 97.5:
+    return "unbelievable"
+  if number >= 80:
     return "excellent"
-  elif number >= 50:
+  elif number >= 60:
     return "great"
   elif number >= 20:
     return "good"
   else:
     return "bad"
 
+def check(guess, answer):
+  h = 0
+  b = 0
+  if guess[0] == answer[0]:
+    h += 1
+  elif guess[0] == answer[1] or guess[0] == answer[2] or guess[0] == answer[3]:
+    b += 1
+  if guess[1] == answer[1]:
+    h += 1
+  elif guess[1] == answer[0] or guess[1] == answer[2] or guess[1] == answer[3]:
+    b += 1
+  if guess[2] == answer[2]:
+    h += 1
+  elif guess[2] == answer[0] or guess[2] == answer[1] or guess[2] == answer[3]:
+    b += 1
+  if guess[3] == answer[3]:
+    h += 1
+  elif guess[3] == answer[0] or guess[3] == answer[1] or guess[3] == answer[2]:
+    b += 1
+  return h, b
 
 a = ""
-l = []
+original = []
 for i in range(1, 10):
   for j in range(1, 10):
     if j == i:
@@ -20,26 +43,31 @@ for i in range(1, 10):
     for k in range(1, 10):
       if k == i or k == j:
         continue
-      l.append(str(i)+str(j)+str(k))
-print(len(l))
-ans = random.choice(l)
+      for l in range(1,10):
+        if l == i or l == j or l == k:
+          continue
+        original.append(str(i)+str(j)+str(k)+str(l))
+ans = random.choice(original)
+choices = original
+all_input = []
 while a != ans:
-  a = input()
-  hit = 0
-  brow = 0
-  if a[0] == ans[0]:
-    hit += 1
-  elif a[0] == ans[1] or a[0] == ans[2]:
-    brow += 1
-  if a[1] == ans[1]:
-    hit += 1
-  elif a[1] == ans[0] or a[1] == ans[2]:
-    brow += 1
-  if a[2] == ans[2]:
-    hit += 1
-  elif a[2] == ans[0] or a[2] == ans[1]:
-    brow += 1
-  
-  print("HIT", hit)
-  print("BROW", brow)
-  print("SCORE", score(s))
+  while True:
+    a = input()
+    if a in original:
+      break
+    else:
+      print("Please enter correctly")
+  hit, blow = check(a, ans)
+  print("HIT", hit, "BLOW", blow)
+  l = len(choices)
+  new_choices = []
+  for i in choices:
+    if check(i, a) == (hit, blow):
+      new_choices.append(i)
+  l_new = len(new_choices)
+  choices = new_choices
+  all_input.append((a, "HIT:"+str(hit), "BLOW:"+str(blow), "SCORE:"+str(score(l_new/l))))
+for i in all_input:
+  for j in i:
+    print(j, end=" ")
+  print("")
