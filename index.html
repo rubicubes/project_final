@@ -90,7 +90,9 @@
       }
 
       const [hit, blow] = check(a, ans);
-      document.getElementById('current').textContent = `HIT:${hit} BLOW:${blow}`;(a, ans);
+      const current = document.getElementById('current');
+      current.style.display = 'block';
+      current.textContent = `HIT:${hit} BLOW:${blow}`;(a, ans);
 
       const l = choices.length;
       let newChoices = [];
