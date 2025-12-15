@@ -43,138 +43,97 @@
 
   <div class="log" id="log"></div>
 
-  <script>
-    function score(number) {
-      number = (1 - number) * 100;
-      if (number >= 97.5) return "unbelievable";
-      if (number >= 80) return "excellent";
-      if (number >= 60) return "great";
-      if (number >= 20) return "good";
-      return "bad";
-    }
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  function score(number) {
+    number = (1 - number) * 100;
+    if (number >= 97.5) return "unbelievable";
+    if (number >= 80) return "excellent";
+    if (number >= 60) return "great";
+    if (number >= 20) return "good";
+    return "bad";
+  }
 
-    function check(guess, answer) {
-      let h = 0, b = 0;
-      for (let i = 0; i < 4; i++) {
-        if (guess[i] === answer[i]) h++;
-        else if (answer.includes(guess[i])) b++;
-      }
-      return [h, b];
+  function check(guess, answer) {
+    let h = 0, b = 0;
+    for (let i = 0; i < 4; i++) {
+      if (guess[i] === answer[i]) h++;
+      else if (answer.includes(guess[i])) b++;
     }
+    return [h, b];
+  }
 
-    // 全候補生成
-    let original = [];
-    for (let i = 1; i <= 9; i++) {
-      for (let j = 1; j <= 9; j++) {
-        if (j === i) continue;
-        for (let k = 1; k <= 9; k++) {
-          if (k === i || k === j) continue;
-          for (let l = 1; l <= 9; l++) {
-            if (l === i || l === j || l === k) continue;
-            original.push(`${i}${j}${k}${l}`);
-          }
+  // 候補生成
+  let original = [];
+  for (let i = 1; i <= 9; i++) {
+    for (let j = 1; j <= 9; j++) {
+      if (j === i) continue;
+      for (let k = 1; k <= 9; k++) {
+        if (k === i || k === j) continue;
+        for (let l = 1; l <= 9; l++) {
+          if (l === i || l === j || l === k) continue;
+          original.push(`${i}${j}${k}${l}`);
         }
       }
     }
+  }
 
-    let ans = original[Math.floor(Math.random() * original.length)];
-    let choices = [...original];
+  let ans = original[Math.floor(Math.random() * original.length)];
+  let choices = [...original];
+  let history = [];
+  let turn = 0;
 
-    function submitGuess() {
-      const input = document.getElementById("guess");
-      const a = input.value;
+  function updateChart() {
+    const ctx = document.getElementById('chart').getContext('2d');
+    if (window.myChart) window.myChart.destroy();
+    window.myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: history.map(h => h.turn),
+        datasets: [{
+          label: '候補削減率 (%)',
+          data: history.map(h => h.percent),
+          fill: false
+        }]
+      },
+      options: { scales: { y: { min: 0, max: 100 } } }
+    });
+  }
 
-      if (!original.includes(a)) {
-        alert("正しい形式で入力してください");
-        return;
-      }
+  function submitGuess() {
+    const input = document.getElementById("guess");
+    const a = input.value;
 
-      const [hit, blow] = check(a, ans);
-      const current = document.getElementById('current');
-      current.style.display = 'block';
-      current.textContent = `HIT:${hit} BLOW:${blow}`;(a, ans);
-
-      const l = choices.length;
-      let newChoices = [];
-      for (let c of choices) {
-        const [h, b] = check(c, a);
-        if (h === hit && b === blow) newChoices.push(c);
-      }
-      const lNew = newChoices.length;
-      choices = newChoices;
-
-      const log = document.getElementById("log");
-      const div = document.createElement("div");
-      div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
-      document.getElementById("log").prepend(div);
-      div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
-      log.prepend(div);
-
-      if (a === ans) {
-        alert("正解！");
-      }
-      updateChart();
-      }
-      input.value = "";
-    }
-      // グラフ用データ
-    let turn = 0;
-    let history = [];
-
-    function updateChart() {
-      const ctx = document.getElementById('chart').getContext('2d');
-      if (window.myChart) window.myChart.destroy();
-      window.myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: history.map(h => h.turn),
-          datasets: [{
-            label: '候補削減率 (%)',
-            data: history.map(h => h.percent),
-            fill: false
-          }]
-        },
-        options: {
-          scales: { y: { min: 0, max: 100 } }
-        }
-      });
-    }]
-        },
-        options: {
-          scales: {
-            y: { min: 0, max: 100 }
-          }
-        }
-      });
+    if (!original.includes(a)) {
+      alert("正しい形式で入力してください");
+      return;
     }
 
-    function submitGuess() {
-      const input = document.getElementById("guess");
-      const a = input.value;
-      if (!original.includes(a)) {
-        alert("正しい形式で入力してください");
-        return;
-      }
-      const [hit, blow] = check(a, ans);
-      const l = choices.length;
-      let newChoices = [];
-      for (let c of choices) {
-        const [h, b] = check(c, a);
-        if (h === hit && b === blow) newChoices.push(c);
-      }
-      const lNew = newChoices.length;
-      choices = newChoices;
-      turn++;
-      const percent = (1 - lNew / l) * 100;
-      history.push({ turn: turn, percent: percent });({ turn: turn, percent: percent });
-      const log = document.getElementById("log");
-      const div = document.createElement("div");
-      div.textContent = `${a} | HIT:${hit} BLOW:${blow} 削減率:${percent.toFixed(1)}%`;
-      log.prepend(div);
-      if (a === ans) alert("正解！");
-      input.value = "";
+    const [hit, blow] = check(a, ans);
+
+    const l = choices.length;
+    let newChoices = [];
+    for (let c of choices) {
+      const [h, b] = check(c, a);
+      if (h === hit && b === blow) newChoices.push(c);
     }
-  </script>
+    const lNew = newChoices.length;
+    choices = newChoices;
+
+    turn++;
+    const percent = (1 - lNew / l) * 100;
+    history.push({ turn: turn, percent: percent });
+
+    const div = document.createElement("div");
+    div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
+    document.getElementById("log").prepend(div);
+
+    updateChart();
+
+    if (a === ans) alert("正解！");
+    input.value = "";
+  }
+</script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
