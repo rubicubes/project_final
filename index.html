@@ -39,7 +39,7 @@
   <input id="guess" maxlength="4" />
   <button onclick="submitGuess()">OK</button>
 
-  <div class="log" id="log"></div>
+  <div class="log" id="log" style="display:none;"></div>
 
   <script>
     function score(number) {
@@ -99,17 +99,24 @@
       choices = newChoices;
 
       const log = document.getElementById("log");
-      const div = document.createElement("div");
-      div.textContent = `${a} | HIT:${hit} BLOW:${blow} SCORE:${score(lNew / l)}`;
+      // ログは正解後にまとめて表示するため、ここでは表示しない
+      ("div");
+      div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
       log.prepend(div);
 
       if (a === ans) {
-        alert("正解！ グラフを表示します");
+        alert("正解！ 結果を表示します");
+        const log = document.getElementById("log");
+        log.style.display = 'block';
+        log.innerHTML = '';
+        for (const h of history) {
+          const div = document.createElement('div');
+          div.textContent = `${h.guess} | HIT:${h.hit} BLOW:${h.blow} SCORE:${h.score}`;
+          log.appendChild(div);
+        }
         document.getElementById('chart').style.display = 'block';
         updateChart();
       }
-      }
-
       input.value = "";
     }
       // グラフ用データ
@@ -161,7 +168,7 @@
       choices = newChoices;
       turn++;
       const percent = (1 - lNew / l) * 100;
-      history.push({ turn: turn, percent: percent });
+      history.push({ turn: turn, percent: percent, guess: a, hit: hit, blow: blow, score: score(lNew / l) });({ turn: turn, percent: percent });
       const log = document.getElementById("log");
       const div = document.createElement("div");
       div.textContent = `${a} | HIT:${hit} BLOW:${blow} 削減率:${percent.toFixed(1)}%`;
