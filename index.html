@@ -104,7 +104,10 @@
       log.prepend(div);
 
       if (a === ans) {
-        alert("正解！");
+        alert("正解！ グラフを表示します");
+        document.getElementById('chart').style.display = 'block';
+        updateChart();
+      }
       }
 
       input.value = "";
@@ -125,6 +128,12 @@
             data: history.map(h => h.percent),
             fill: false
           }]
+        },
+        options: {
+          scales: { y: { min: 0, max: 100 } }
+        }
+      });
+    }]
         },
         options: {
           scales: {
@@ -153,7 +162,6 @@
       turn++;
       const percent = (1 - lNew / l) * 100;
       history.push({ turn: turn, percent: percent });
-      updateChart();
       const log = document.getElementById("log");
       const div = document.createElement("div");
       div.textContent = `${a} | HIT:${hit} BLOW:${blow} 削減率:${percent.toFixed(1)}%`;
@@ -165,6 +173,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <canvas id="chart" width="400" height="200"></canvas>
+  <canvas id="chart" style="display:none;" width="400" height="200"></canvas>
 </body>
 </html>
