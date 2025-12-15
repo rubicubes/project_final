@@ -128,9 +128,12 @@
     div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
     document.getElementById("log").prepend(div);
 
-    updateChart();
+    
 
-    if (a === ans) alert("正解！");
+    if (a === ans) {
+      updateChart();
+      alert("正解！");
+    }("正解！");
     input.value = "";
   }
 </script>
