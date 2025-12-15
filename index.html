@@ -36,6 +36,8 @@
   <h1>Hit & Blow</h1>
   <p>1〜9の異なる4桁の数字を入力してください</p>
 
+  <div id="current" style="margin:10px 0;font-weight:bold;"></div>
+
   <input id="guess" maxlength="4" />
   <button onclick="submitGuess()">OK</button>
 
@@ -88,6 +90,7 @@
       }
 
       const [hit, blow] = check(a, ans);
+      document.getElementById('current').textContent = `HIT:${hit} BLOW:${blow}`;(a, ans);
 
       const l = choices.length;
       let newChoices = [];
