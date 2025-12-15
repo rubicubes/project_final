@@ -36,12 +36,12 @@
   <h1>Hit & Blow</h1>
   <p>1〜9の異なる4桁の数字を入力してください</p>
 
-  <div id="current" style="margin:10px 0;font-weight:bold;"></div>
+  
 
   <input id="guess" maxlength="4" />
   <button onclick="submitGuess()">OK</button>
 
-  <div class="log" id="log" style="display:none;"></div>
+  <div class="log" id="log"></div>
 
   <script>
     function score(number) {
@@ -104,23 +104,16 @@
       choices = newChoices;
 
       const log = document.getElementById("log");
-      // ログは正解後にまとめて表示するため、ここでは表示しない
-      ("div");
+      const div = document.createElement("div");
+      div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
+      document.getElementById("log").prepend(div);
       div.textContent = `${a} | HIT:${hit} BLOW:${blow}`;
       log.prepend(div);
 
       if (a === ans) {
-        alert("正解！ 結果を表示します");
-        const log = document.getElementById("log");
-        log.style.display = 'block';
-        log.innerHTML = '';
-        for (const h of history) {
-          const div = document.createElement('div');
-          div.textContent = `${h.guess} | HIT:${h.hit} BLOW:${h.blow} SCORE:${h.score}`;
-          log.appendChild(div);
-        }
-        document.getElementById('chart').style.display = 'block';
-        updateChart();
+        alert("正解！");
+      }
+      updateChart();
       }
       input.value = "";
     }
@@ -173,7 +166,7 @@
       choices = newChoices;
       turn++;
       const percent = (1 - lNew / l) * 100;
-      history.push({ turn: turn, percent: percent, guess: a, hit: hit, blow: blow, score: score(lNew / l) });({ turn: turn, percent: percent });
+      history.push({ turn: turn, percent: percent });({ turn: turn, percent: percent });
       const log = document.getElementById("log");
       const div = document.createElement("div");
       div.textContent = `${a} | HIT:${hit} BLOW:${blow} 削減率:${percent.toFixed(1)}%`;
@@ -185,6 +178,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <canvas id="chart" style="display:none;" width="400" height="200"></canvas>
+  <canvas id="chart" width="400" height="200"></canvas>
 </body>
 </html>
